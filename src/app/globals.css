@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fontes */
+  --font-poppins: "Poppins", sans-serif;
+
+  /* Cores Base (Mapeadas para as variáveis que mudam) */
+  --color-background-dark: var(--bg-dark);
+  --color-background: var(--bg);
+  --color-background-light: var(--bg-light);
+
+  --color-text-main: var(--text);
+  --color-text-muted: var(--text-muted);
+
+  --color-border-custom: var(--border);
+  --color-highlight: var(--highlight);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+
+  /* Outros */
+  --radius-custom: var(--radius-custom);
+  --background-image-fade-overlay: var(--fade-overlay);
+}
+
+:root {
+  --bg-dark: hsl(255, 11%, 12%);
+  --bg: hsl(255, 11%, 7%);
+  --bg-light: hsl(255, 11%, 2%);
+  --text: hsl(0, 0%, 95%);
+  --text-muted: hsl(0, 0%, 70%);
+  --border: hsl(0, 0%, 30%);
+  --highlight: hsl(0, 0%, 60%);
+  --primary: hsl(266, 100%, 50%);
+  --primary-hover: hsl(266, 100%, 40%);
+  --secondary: hsl(220, 28%, 51%);
+  --secondary-hover: hsl(220, 28%, 42%);
+  --fade-overlay: linear-gradient(to top, rgba(255, 255, 255, 0.411), transparent 80%);
+  --transition-default: all .23s ease-in-out;
+  --radius-custom: 12px;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text-main font-normal font-poppins antialiased;
+    line-height: 1.6;
+  }
+
+  *{
+    @apply transition-all duration-300 ease-in-out
+  }
+
+  /* Scrollbar para Webkit (Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    width: 0.4rem;
+    height: 0.4rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    /* No v4, você pode usar a função theme() ou cores diretas */
+    background: hsl(266, 100%, 50%);
+    border-radius: 8px;
+  }
+
+  /* Dica: Adicione suporte para Firefox (opcional) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(266, 100%, 50%) transparent;
+  }
+
+}
