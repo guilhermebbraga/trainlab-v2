@@ -31,4 +31,9 @@ export default class WorkoutService extends Service {
     const response = await this.axiosInstance.get(`/workouts/${id}`);
     return response.data;
   }
+
+  async deleteWorkout(id: string) {
+    const response = await this.axiosInstance.delete(`/workouts/${id}`);
+    return response.data;
+  }
 }
