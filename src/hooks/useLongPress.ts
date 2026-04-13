@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 
 export default function useLongPress(callback: () => void, ms = 500) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [isPressing, setIsPressing] = useState(false);
+  const [ispressing, setIsPressing] = useState<boolean>(false);
 
   const start = useCallback(() => {
     setIsPressing(true);
@@ -29,6 +29,6 @@ export default function useLongPress(callback: () => void, ms = 500) {
     onMouseLeave: stop,
     onTouchStart: start,
     onTouchEnd: stop,
-    isPressing,
+    ispressing
   };
 }

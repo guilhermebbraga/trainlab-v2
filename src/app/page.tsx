@@ -12,7 +12,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginInput, LoginSchema } from "../lib/validations/login.validation";
-import { AuthService } from "./services/AuthService";
+import AuthService from "./services/AuthService";
 import { toast } from "sonner";
 
 const authService = new AuthService();
@@ -33,7 +33,7 @@ export default function Home() {
         const response = await authService.login(data);
         toast.success("Login efetuado com sucesso!");
         console.log(response?.accessToken);
-        router.push("/home");
+        router.push("/treinos");
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {

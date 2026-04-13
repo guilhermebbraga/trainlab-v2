@@ -9,16 +9,18 @@ interface InputProps {
   radius?: string;
   otherStyles?: string;
   error?: string;
+  elementId?: string
 }
 
 export default forwardRef<HTMLInputElement, InputProps>(function Input(
-  { type, placeholder, radius, otherStyles, error, disabled, ...props },
+  { type, placeholder, radius, otherStyles, error, disabled,  elementId, ...props},
   ref,
 ) {
   return (
     <>
       <input
         ref={ref}
+        id={elementId}
         disabled={disabled}
         type={type}
         placeholder={placeholder}
@@ -28,7 +30,7 @@ export default forwardRef<HTMLInputElement, InputProps>(function Input(
           font-light bg-bg-light focus:outline-none
           rounded-[18px] placeholder:text-sm px-4 py-2.5 focus:border-primary
           bg-background-dark cursor-pointer border border-transparent
-          focus:outline-3
+          focus:outline-3 w-full relative
       ${otherStyles}
       ${disabled && "opacity-70"}
       ${

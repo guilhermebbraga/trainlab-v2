@@ -26,9 +26,9 @@
 }
 
 :root {
-  --bg-dark: hsl(255, 11%, 12%);
-  --bg: hsl(255, 11%, 7%);
-  --bg-light: hsl(255, 11%, 2%);
+  --color-background-dark: hsl(245, 16%, 6%);
+  --color-background: hsl(245, 16%, 11%);
+  --color-background-light: hsl(245, 16%, 16%);
   --text: hsl(0, 0%, 95%);
   --text-muted: hsl(0, 0%, 70%);
   --border: hsl(0, 0%, 30%);

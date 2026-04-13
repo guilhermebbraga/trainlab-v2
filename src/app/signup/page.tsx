@@ -11,7 +11,7 @@ import {
   RegisterSchema,
 } from "@/src/lib/validations/login.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserService } from "../services/UserService";
+import UserService from "../services/UserService";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -34,8 +34,8 @@ export default function Register() {
 
         toast.success("Conta criada com sucesso!");
         router.push("/");
-        
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         const status = error.response?.status;
 

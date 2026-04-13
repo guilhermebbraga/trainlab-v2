@@ -13,12 +13,12 @@ export const RegisterSchema = z.object({
     
     password: z
         .string()
-        .min(8, 'A senha deve conter no mínimo 8 caracteres')
+        .min(6, 'A senha deve conter no mínimo 6 caracteres')
         .max(14, 'A senha deve conter no mínimo 14 caracteres'),
 
     password2: z
         .string()
-        .min(8, 'A senha deve conter no mínimo 8 caracteres')
+        .min(6, 'A senha deve conter no mínimo 6 caracteres')
         .max(14, 'A senha deve conter no mínimo 14 caracteres')
 })
 .refine((data) => data.password === data.password2, {

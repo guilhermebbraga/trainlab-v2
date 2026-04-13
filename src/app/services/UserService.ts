@@ -1,6 +1,6 @@
 import Service from "./Service";
 
-export class UserService extends Service {
+export default class UserService extends Service {
   constructor() {
     super();
   }
