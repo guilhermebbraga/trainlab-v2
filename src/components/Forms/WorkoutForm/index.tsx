@@ -16,6 +16,7 @@ import LabelWrapper from "../../LabelWrapper";
 
 import WorkoutService from "@/src/app/services/WorkoutService";
 import { useRouter } from "next/navigation";
+import { createWorkoutAction } from "@/src/app/actions/workouts-actions";
 
 interface WorkoutModalProps {
   closeModal: () => void;
@@ -44,12 +45,11 @@ export default function WorkoutForm({ closeModal }: WorkoutModalProps) {
   const onSubmit = (data: WorkoutInput) => {
     startTransition(async () => {
       try {
-        await workoutService.postWorkout(data);
+        await createWorkoutAction(data)
 
         reset();
         toast.success("Criado com sucesso!");
         closeModal()
-        router.refresh();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Falha ao criar. Tente novamente");
