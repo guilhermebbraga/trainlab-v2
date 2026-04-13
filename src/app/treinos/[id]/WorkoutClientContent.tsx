@@ -14,18 +14,33 @@ import { FiTrash } from "react-icons/fi";
 import { CiPlay1 } from "react-icons/ci";
 import { GoPlus } from "react-icons/go";
 import ExerciseForm from "@/src/components/Forms/ExerciseForm";
+import { deleteWorkoutAction } from "../../actions/workouts-actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface WorkoutClientContentProps {
     workout: WorkoutData
 }
 
 export default function WorkoutClientContent({workout}: WorkoutClientContentProps) {
+  const router = useRouter()
   const [modalOpen, setModalOpen] = useState(false);
   const { name, exercises, id } = workout;
   
 
   if(!exercises || !exercises || !id) {
     return <p>Exercício não encontrado</p>
+  }
+
+  const handleDeleteWorkout = async () => {
+    const response = await deleteWorkoutAction(id)
+
+    if(response.success){
+      toast.success("Treino deletado.")
+      router.push('/treinos')
+    }else {
+      toast.error('Ocorreu um erro.')
+    }
   }
 
   return (
@@ -46,7 +61,7 @@ export default function WorkoutClientContent({workout}: WorkoutClientContentProp
 
         <Button text="Iniciar" icon={CiPlay1}/>
 
-        <Button text="Excluir" icon={FiTrash}/>
+        <Button text="Excluir" icon={FiTrash} onClick={handleDeleteWorkout}/>
       </BottomWrapper>
     </AppContainer>
   );

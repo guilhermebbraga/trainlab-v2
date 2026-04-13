@@ -12,8 +12,7 @@ import {
 } from "@/src/lib/validations/exercise.validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import ExerciseService from "@/src/app/services/ExerciseService";
-import { useRouter } from 'next/navigation'
+import { createExerciseAction } from "@/src/app/actions/exercise-actions";
 
 interface ExerciseFormProps {
     workoutId: string
@@ -21,9 +20,7 @@ interface ExerciseFormProps {
 }
 
 export default function ExerciseForm({ workoutId, closeModal }: ExerciseFormProps) {
-  const router = useRouter()
   const [isPending, startTransition] = useTransition();
-  const exerciseService = new ExerciseService()
 
   const {
     register,
@@ -43,13 +40,11 @@ export default function ExerciseForm({ workoutId, closeModal }: ExerciseFormProp
     startTransition(async () => {
       try {
 
-        await exerciseService.postExercise({...data, workoutId})
+        await createExerciseAction({...data, workoutId})
         
-        console.log(data)
         reset()
         toast.success("Criado com sucesso!");
         closeModal()
-        router.refresh()
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Falha ao criar");
