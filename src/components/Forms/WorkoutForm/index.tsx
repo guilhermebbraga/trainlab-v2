@@ -13,9 +13,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import LabelWrapper from "../../LabelWrapper";
-
-import WorkoutService from "@/src/app/services/WorkoutService";
-import { useRouter } from "next/navigation";
 import { createWorkoutAction } from "@/src/app/actions/workouts-actions";
 
 interface WorkoutModalProps {
@@ -23,10 +20,7 @@ interface WorkoutModalProps {
 }
 
 export default function WorkoutForm({ closeModal }: WorkoutModalProps) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
-  const workoutService = new WorkoutService();
 
   const {
     register,
