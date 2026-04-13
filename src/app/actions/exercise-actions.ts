@@ -13,6 +13,6 @@ export async function createExerciseAction(data: PostExercise) {
     return { success: true };
   } catch (error) {
     console.error("Erro na Server Action: ", error);
-    return { success: false, error: "Falha ao criar o treino no servidor." };
+    return { success: false, error: "Falha ao criar o exercício no servidor." };
   }
 }
