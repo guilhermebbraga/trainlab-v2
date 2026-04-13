@@ -14,4 +14,10 @@ export default class ExerciseService extends Service {
 
     return response.data;
   }
+
+  async deleteExercise(id: string) {
+    const response = await this.axiosInstance.delete(`/exercises/${id}`);
+
+    return response.data;
+  }
 }

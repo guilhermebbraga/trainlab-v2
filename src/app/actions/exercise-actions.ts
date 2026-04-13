@@ -16,3 +16,16 @@ export async function createExerciseAction(data: PostExercise) {
     return { success: false, error: "Falha ao criar o exercício no servidor." };
   }
 }
+
+export async function deleteExerciseAction(id: string) {
+  const exerciseService = new ExerciseService();
+
+  try {
+    await exerciseService.deleteExercise(id);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erro na Server Action: ", error);
+    return { success: false, error: "Falha ao criar o exercício no servidor." };
+  }
+}
