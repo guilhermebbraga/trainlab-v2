@@ -27,6 +27,12 @@ export default class WorkoutService extends Service {
     return response.data;
   }
 
+  async putWorkout(data: PostWorkout, id: string) {
+    const response = await this.axiosInstance.put(`/workouts/${id}`, data);
+
+    return response.data;
+  }
+
   async getWorkoutById(id: string) {
     const response = await this.axiosInstance.get(`/workouts/${id}`);
     return response.data;

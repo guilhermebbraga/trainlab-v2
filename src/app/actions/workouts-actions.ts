@@ -17,6 +17,20 @@ export async function createWorkoutAction(data: PostWorkout){
     }
 }
 
+export async function editWorkoutAction(data: PostWorkout, id: string){
+    const workoutService = new WorkoutService()
+
+    try {
+        await workoutService.putWorkout(data, id)
+        revalidatePath('/treinos')
+
+        return { success: true }
+    } catch (error) {
+        console.error('Erro na Server Action: ', error)
+        return { success: false, error: 'Falha ao criar o treino no servidor.' }
+    }
+}
+
 export async function deleteWorkoutAction(id: string){
     const workoutService = new WorkoutService()
 

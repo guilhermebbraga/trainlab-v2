@@ -1,3 +1,4 @@
+import { ExerciseInput } from "@/src/lib/validations/exercise.validations";
 import Service from "./Service";
 
 export interface PostExercise {
@@ -11,6 +12,12 @@ export interface PostExercise {
 export default class ExerciseService extends Service {
   async postExercise(data: PostExercise) {
     const response = await this.axiosInstance.post("/exercises", { ...data });
+
+    return response.data;
+  }
+
+  async putExercise(id: string, data: ExerciseInput) {
+    const response = await this.axiosInstance.put(`/exercises/${id}`, data);
 
     return response.data;
   }

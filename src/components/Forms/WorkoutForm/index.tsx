@@ -1,5 +1,5 @@
 "use client";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import Button from "../../Button";
 import Input from "../../Input";
 import Radio from "../../Radio";
@@ -13,14 +13,32 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import LabelWrapper from "../../LabelWrapper";
-import { createWorkoutAction } from "@/src/app/actions/workouts-actions";
+import { createWorkoutAction, editWorkoutAction } from "@/src/app/actions/workouts-actions";
 
 interface WorkoutModalProps {
   closeModal: () => void;
+  editing?: string;
 }
 
-export default function WorkoutForm({ closeModal }: WorkoutModalProps) {
+const workoutsTypes = [
+  ["STRENGTH", "Força"],
+  ["HYPERTROPHY", "Hipertrofia"],
+  ["CARDIO", "Cardio"],
+  ["FUNCTIONAL", "Funcional"],
+  ["ENDURANCE", "Resistência"],
+];
+const difficulties = [
+  ["BEGINNER", "Iniciante"],
+  ["INTERMEDIATE", "Intermediário"],
+  ["ADVANCED", "Avançado"],
+];
+
+export default function WorkoutForm({
+  closeModal,
+  editing,
+}: WorkoutModalProps) {
   const [isPending, startTransition] = useTransition();
+  const isEditing = !!editing;
 
   const {
     register,
@@ -31,19 +49,53 @@ export default function WorkoutForm({ closeModal }: WorkoutModalProps) {
   } = useForm<WorkoutInput>({
     resolver: zodResolver(WorkoutSchema),
     defaultValues: {
+      description: "",
       level: "BEGINNER",
-      type: "ENDURANCE",
+      name: "",
+      type: "STRENGTH",
     },
   });
+
+  useEffect(() => {
+    if (isEditing) {
+      const getEditingWorkout = async () => {
+        try {
+          const response = await fetch(
+            `http://192.168.15.54:9090/workouts/${editing}`,
+          );
+
+          if (!response) throw new Error();
+
+          const workout = (await response.json()) as WorkoutInput;
+          reset(workout);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          toast.error("Falha ao carregar dados do treino");
+          closeModal();
+        }
+      };
+      getEditingWorkout();
+    }
+  }, [closeModal, editing, isEditing, reset]);
 
   const onSubmit = (data: WorkoutInput) => {
     startTransition(async () => {
       try {
-        await createWorkoutAction(data)
+        if (isEditing) {
 
-        reset();
-        toast.success("Criado com sucesso!");
-        closeModal()
+          await editWorkoutAction(data, editing)
+
+          reset();
+          toast.success("Editado com sucesso!");
+          closeModal();
+        } else {
+          await createWorkoutAction(data);
+
+          reset();
+          toast.success("Criado com sucesso!");
+          closeModal();
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Falha ao criar. Tente novamente");
@@ -51,19 +103,6 @@ export default function WorkoutForm({ closeModal }: WorkoutModalProps) {
       }
     });
   };
-
-  const workoutsTypes = [
-    ["STRENGTH", "Força"],
-    ["HYPERTROPHY", "Hipertrofia"],
-    ["CARDIO", "Cardio"],
-    ["FUNCTIONAL", "Funcional"],
-    ["ENDURANCE", "Resistência"],
-  ];
-  const difficulties = [
-    ["BEGINNER", "Iniciante"],
-    ["INTERMEDIATE", "Intermediário"],
-    ["ADVANCED", "Avançado"],
-  ];
 
   return (
     <form

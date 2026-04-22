@@ -12,9 +12,10 @@ interface ExerciseLiProps extends HTMLAttributes<HTMLLIElement> {
   exercise: Exercise;
   onClick?: () => void;
   pressing?: boolean;
+  editing: (id: string) => void;
 }
 
-export default function ExerciseLi({ exercise, onClick }: ExerciseLiProps) {
+export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -34,6 +35,10 @@ export default function ExerciseLi({ exercise, onClick }: ExerciseLiProps) {
     }
   };
 
+  const handleEditing = () => {
+    editing(exercise.id!)
+  }
+  
   return (
     <li
       {...longPressEvents}
@@ -63,9 +68,7 @@ export default function ExerciseLi({ exercise, onClick }: ExerciseLiProps) {
           <Button
             text="Editar"
             otherStyles="text-[12px] flex-1"
-            // onClick={() =>
-            //   navigate(`/treinos/exercises/${exercise.id}/edit`)
-            // }
+            onClick={handleEditing}
           />
         </div>
       )}

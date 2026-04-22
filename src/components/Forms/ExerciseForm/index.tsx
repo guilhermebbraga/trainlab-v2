@@ -5,22 +5,28 @@ import Input from "../../Input";
 import LabelWrapper from "../../LabelWrapper";
 import Select from "../../Select";
 import SliderInput from "../../SliderInput";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import {
   ExerciseInput,
   ExerciseSchema,
 } from "@/src/lib/validations/exercise.validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { createExerciseAction } from "@/src/app/actions/exercise-actions";
+import { createExerciseAction, updateExerciseAction } from "@/src/app/actions/exercise-actions";
 
 interface ExerciseFormProps {
-    workoutId: string
-    closeModal: () => void;
+  workoutId: string;
+  closeModal: () => void;
+  editing?: string | null;
 }
 
-export default function ExerciseForm({ workoutId, closeModal }: ExerciseFormProps) {
+export default function ExerciseForm({
+  workoutId,
+  closeModal,
+  editing,
+}: ExerciseFormProps) {
   const [isPending, startTransition] = useTransition();
+  const isEditing = !!editing;
 
   const {
     register,
@@ -31,20 +37,51 @@ export default function ExerciseForm({ workoutId, closeModal }: ExerciseFormProp
   } = useForm<ExerciseInput>({
     resolver: zodResolver(ExerciseSchema),
     defaultValues: {
-        sets: 3,
-        repetitions: 15
-    }
+      sets: 3,
+      repetitions: 15,
+    },
   });
+
+  useEffect(() => {
+    if (isEditing) {
+      const getEditingExercise = async () => {
+        try {
+          console.log(editing);
+          const response = await fetch(
+            `http://192.168.15.54:9090/exercises/${editing}`,
+          );
+
+          if (!response) throw new Error();
+
+          const exercise = (await response.json()) as ExerciseInput;
+          reset(exercise);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          toast.error("Falha ao carregar dados do exercício");
+          closeModal();
+        }
+      };
+
+      getEditingExercise();
+    }
+  }, [closeModal, editing, isEditing, reset]);
 
   const onSubmit = (data: ExerciseInput) => {
     startTransition(async () => {
       try {
+        if (isEditing) {
+          await updateExerciseAction(editing, data);
 
-        await createExerciseAction({...data, workoutId})
-        
-        reset()
-        toast.success("Criado com sucesso!");
-        closeModal()
+          reset();
+          toast.success("Editado com sucesso!");
+          closeModal();
+        } else {
+          await createExerciseAction({ ...data, workoutId });
+
+          reset();
+          toast.success("Criado com sucesso!");
+          closeModal();
+        }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Falha ao criar");
@@ -103,7 +140,7 @@ export default function ExerciseForm({ workoutId, closeModal }: ExerciseFormProp
           )}
         />
       </LabelWrapper>
-      
+
       <LabelWrapper name="Séries" elementId="repetitions">
         <Controller
           name="repetitions"
