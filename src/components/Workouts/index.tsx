@@ -1,10 +1,10 @@
 import { WorkoutData } from "@/src/interfaces/Workout";
 import Chip from "../Chip";
 import Link from "next/link";
+import { getWorkoutsAction } from "@/src/app/actions/workouts-actions";
 
 export default async function Workouts() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workouts`);
-  const workouts: WorkoutData[] = await response.json();
+  const workouts: WorkoutData[] = await getWorkoutsAction()
 
   return (
     <div className="mt-7.5 flex flex-col gap-5">

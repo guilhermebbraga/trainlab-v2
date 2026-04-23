@@ -1,24 +1,53 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { toast } from "sonner";
-const abortController = new AbortController();
+import Cookies from "js-cookie";
 
 export default class Service {
   protected axiosInstance: AxiosInstance;
   private static isRedirecting = false;
+  private abortController: AbortController;
 
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_URL || "http://192.168.15.54:9090",
     });
-
+    this.abortController = new AbortController();
     this.setupInterceptors();
   }
 
   private setupInterceptors() {
-    this.axiosInstance.interceptors.request.use((config) => {
-      config.signal = abortController.signal;
-      return config;
-    });
+    this.axiosInstance.interceptors.request.use(
+      async (config: InternalAxiosRequestConfig) => {
+        let token;
+
+        if (typeof window === "undefined") {
+          const { cookies } = await import("next/headers")
+
+          const cookieStore = await cookies();
+          token = cookieStore.get("TrainLabAuth")?.value;
+        } else {
+          token = Cookies.get("TrainLabAuth");
+        }
+
+        console.log("Toke extraido dos Cookies: ", token);
+
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        if (this.abortController.signal.aborted) {
+          this.abortController = new AbortController();
+        }
+
+        config.signal = this.abortController.signal;
+
+        return config;
+      },
+    );
 
     this.axiosInstance.interceptors.response.use(
       (response) => response,
@@ -30,29 +59,25 @@ export default class Service {
   }
 
   private handleError(error: AxiosError) {
-    // Se o erro for um cancelamento proposital, não fazemos nada
     if (axios.isCancel(error)) return;
 
     if (error.response) {
       const status = error.response.status;
-      const isServer = typeof window === "undefined";
+      const isBrowser = typeof window !== "undefined";
 
       switch (status) {
         case 401:
-          if (!Service.isRedirecting && !isServer) {
-          Service.isRedirecting = true;
-          
-          // Cancela todas as outras requisições que estão "na fila"
-          abortController.abort(); 
+          if (!Service.isRedirecting && isBrowser) {
+            Service.isRedirecting = true;
+            this.abortController.abort();
+            Cookies.remove("TrainLabAuth");
+            toast.error("Sessão expirada. Redirecionando...");
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 2000);
+          }
+          break;
 
-          localStorage.removeItem("token");
-          toast.error("Sessão expirada. Redirecionando...");
-          
-          // Força o reload para limpar o estado da aplicação
-          window.location.href = "/";
-        }
-        return;
-        
         case 403:
           toast.error("Você não tem permissão para isso.");
           break;

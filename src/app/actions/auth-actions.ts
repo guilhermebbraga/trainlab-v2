@@ -6,6 +6,7 @@ export async function loginAction(data: Login) {
 
   try {
     await authService.login(data);
+
     revalidatePath("/");
 
     return { success: true };

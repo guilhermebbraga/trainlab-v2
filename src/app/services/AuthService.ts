@@ -1,3 +1,4 @@
+import Cookies from "js-cookie"
 import Service from "./Service";
 
 export interface Login {
@@ -18,13 +19,10 @@ export default class AuthService extends Service {
 
     if (!response) throw new Error("Falha");
 
-    const { accessToken } = response.data;
+    const { accessToken } = response.data
 
     if (accessToken) {
-      localStorage.setItem("@trainLab:token", accessToken);
-
-      this.axiosInstance.defaults.headers.common["Authorization"] =
-        `Bearer ${accessToken}`;
+      Cookies.set("TrainLabAuth", accessToken)
     }
 
     return response.data;

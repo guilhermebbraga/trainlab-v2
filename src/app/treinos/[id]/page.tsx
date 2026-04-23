@@ -1,3 +1,4 @@
+import { getWorkoutWithExercisesAction } from "../../actions/workouts-actions";
 import WorkoutClientContent from "./WorkoutClientContent";
 
 
@@ -8,8 +9,7 @@ interface WorkoutProps {
 export default async function Workout({ params }: WorkoutProps) {
   const { id } = await params;
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workouts/${id}`)
-  const workout = await response.json()
+  const workout = await getWorkoutWithExercisesAction(id)
 
   return <WorkoutClientContent workout={workout}/>
 }

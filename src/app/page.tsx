@@ -30,9 +30,8 @@ export default function Home() {
   const onSubmit = (data: LoginInput) => {
     startTransition(async () => {
       try {
-        const response = await authService.login(data);
+        await authService.login(data);
         toast.success("Login efetuado com sucesso!");
-        console.log(response?.accessToken);
         router.push("/treinos");
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,7 +90,7 @@ export default function Home() {
         <Button
           type="submit"
           text={isPending ? "Entrando..." : "Login"}
-          direction="left"
+          reverse
           disabled={isPending}
         />
 
