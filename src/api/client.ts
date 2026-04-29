@@ -27,7 +27,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
     const response = await fetch(`${baseUrl}${endpoint}`, { ...options, headers })
 
     if(response.status === 401) {
-        redirect('/')
+        redirect('/?message=invalid_token')
     }
 
     if(!response.ok){

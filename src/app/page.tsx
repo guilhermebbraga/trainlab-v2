@@ -8,18 +8,38 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginInput, LoginSchema } from "../lib/validations/login.validation";
-import AuthService from "./services/AuthService";
 import { toast } from "sonner";
-
-const authService = new AuthService();
+import { loginAction } from "./actions/auth-actions";
+import { AUTH_MESSAGES } from "../constants/messages";
 
 export default function Home() {
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  const hasShownToast = useRef(false);
+
+  useEffect(() => {
+    const messageKey = searchParams.get("message");
+
+    const timer = setTimeout(() => {
+      if (messageKey && AUTH_MESSAGES[messageKey] && !hasShownToast.current) {
+        toast.error(AUTH_MESSAGES[messageKey], {
+          id: "auth-error",
+        });
+        hasShownToast.current = true;
+
+        window.history.replaceState({}, "", "/");
+      }
+    }, 100);
+
+    return () => clearTimeout(timer)
+    
+  }, [searchParams]);
 
   const {
     register,
@@ -30,7 +50,13 @@ export default function Home() {
   const onSubmit = (data: LoginInput) => {
     startTransition(async () => {
       try {
-        await authService.login(data);
+        const result = await loginAction(data);
+
+        if (!result.success) {
+          toast.error(result.error || "Credenciais Inválidas");
+          return;
+        }
+
         toast.success("Login efetuado com sucesso!");
         router.push("/treinos");
 
