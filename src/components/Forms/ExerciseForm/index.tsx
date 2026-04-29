@@ -51,11 +51,13 @@ export default function ExerciseForm({
     if (isEditing) {
       const getEditingExercise = async () => {
         try {
-          const exercise = (await getExerciseByIdAction(
-            workoutId,
-            editing,
-          )) as ExerciseInput;
 
+          const response = await getExerciseByIdAction(workoutId, editing)
+
+          if(!response.success) throw new Error()
+          
+          const exercise = response.data
+            
           reset(exercise);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {

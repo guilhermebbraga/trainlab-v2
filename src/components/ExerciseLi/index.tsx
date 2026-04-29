@@ -25,7 +25,7 @@ export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProp
     setOpen(!open);
   };
 
-  const longPressEvents = useLongPress(onLongPress, 500);
+  const {ispressing, ...otherProps} = useLongPress(onLongPress, 500);
 
   const handleDeleteExercise = async (id: string) => {
     const response = await deleteExerciseAction(workoutId, id);
@@ -33,7 +33,7 @@ export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProp
       toast.success('Deletado com sucesso!');
       router.refresh();
     } else {
-      toast.error('Ocorreu um erro.');
+      toast.error(response.error);
     }
   };
 
@@ -43,10 +43,11 @@ export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProp
   
   return (
     <li
-      {...longPressEvents}
+      {...otherProps}
       onClick={onClick}
       className={`
             bg-background-dark p-5 rounded-2xl  cursor-pointer
+            ${ispressing && "active:bg-background-light"} select-none
             `}
     >
       <div className="flex justify-between mb-5 text-sm">
