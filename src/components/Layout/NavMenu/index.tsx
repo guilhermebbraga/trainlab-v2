@@ -13,7 +13,7 @@ export default function NavMenu() {
 
   const menuItems: Menu[] = [
     {
-      path: '/treinos',
+      path: '/home',
       icon: <RiHome2Line/>
     },
     {

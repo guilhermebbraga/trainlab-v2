@@ -4,14 +4,14 @@ import Input from "@/src/components/Input";
 
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
-import React, { useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
   RegisterInput,
   RegisterSchema,
 } from "@/src/lib/validations/login.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import UserService from "../services/UserService";
+import UserService from "../../services/UserService";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -51,7 +51,7 @@ export default function Register() {
   return (
     <div className="flex flex-col gap-7.5 h-screen px-5 pt-5 pb-16">
       <Link
-        href="/"
+        href="/login"
         className="border-2 px-2.5 rounded-custom text-primary flex items-center
         gap-2.5 hover:text-text-main cursor-pointer w-fit self-end mb-5 hover:border-primary hover:bg-primary"
       >
@@ -106,7 +106,7 @@ export default function Register() {
         <Button
           type="submit"
           text={isPending ? "Criando..." : "Criar conta"}
-          direction="left"
+          reverse
           disabled={isPending}
         />
       </form>

@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 export class ApiError extends Error {
   status: number;
@@ -33,7 +32,11 @@ export async function apiRequest<T>(
   });
 
   if (response.status === 401) {
-    redirect("/?message=invalid_token");
+    throw new ApiError("Não autorizado", 401)
+  }
+
+  if (response.status === 403) {
+    throw new ApiError("Token expirado", 403)
   }
 
   if (!response.ok) {
