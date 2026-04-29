@@ -6,8 +6,6 @@ export interface WorkoutData {
   name: string;
   type: WorkoutGoal;
   level: LevelGoal;
-  totalExercises?: number;
-  totalSets?: number;
   id?: string;
   description?: string;
   createdAt?: string;

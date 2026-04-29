@@ -27,8 +27,6 @@ export default async function Workouts() {
           <div className="flex gap-5 text-sm mt-5 justify-between items-center">
             <Chip style="solid" text={workoutGoalTranslations[workout.type]} />
             <Chip style="bordered" text={levelGoalTranslations[workout.level]} />
-
-            <span>0 exs - 0 sets</span>
           </div>
         </Link>
       ))}

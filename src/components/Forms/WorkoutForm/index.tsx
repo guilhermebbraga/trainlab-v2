@@ -30,8 +30,6 @@ const workoutTypesOptions = Object.entries(workoutGoalTranslations).map(
   ([key, value]) => [key, value],
 );
 
-console.log(workoutTypesOptions);
-
 const difficulties = Object.entries(levelGoalTranslations).map(
   ([key, value]) => [key, value],
 );
