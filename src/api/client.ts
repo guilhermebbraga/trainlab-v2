@@ -36,6 +36,7 @@ export async function apiRequest<T>(
   }
 
   if (response.status === 403) {
+    console.log(response)
     throw new ApiError("Token expirado", 403)
   }
 

@@ -1,13 +1,11 @@
 "use client";
 import Button from "@/src/components/Button";
-import BottomWrapper from "@/src/components/ButtonWrapper";
 import WorkoutForm from "@/src/components/Forms/WorkoutForm";
 import AppContainer from "@/src/components/Layout/AppContainer";
 import Section from "@/src/components/Layout/Section";
 import Modal from "@/src/components/Modal";
-import NavHeader from "@/src/components/NavHeader";
 import { useState } from "react";
-import { FaFilter, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 
 interface TreinosClientProps {
   children: React.ReactNode;
