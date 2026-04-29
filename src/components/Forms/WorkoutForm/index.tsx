@@ -18,24 +18,23 @@ import {
   editWorkoutAction,
   getWorkoutWithExercisesAction,
 } from "@/src/app/actions/workouts-actions";
+import { workoutGoalTranslations } from "@/src/constants/workouts";
+import { levelGoalTranslations } from "@/src/constants/levels";
 
 interface WorkoutModalProps {
   closeModal: () => void;
   editing?: string;
 }
 
-const workoutsTypes = [
-  ["STRENGTH", "Força"],
-  ["HYPERTROPHY", "Hipertrofia"],
-  ["CARDIO", "Cardio"],
-  ["FUNCTIONAL", "Funcional"],
-  ["ENDURANCE", "Resistência"],
-];
-const difficulties = [
-  ["BEGINNER", "Iniciante"],
-  ["INTERMEDIATE", "Intermediário"],
-  ["ADVANCED", "Avançado"],
-];
+const workoutTypesOptions = Object.entries(workoutGoalTranslations).map(
+  ([key, value]) => [key, value],
+);
+
+console.log(workoutTypesOptions);
+
+const difficulties = Object.entries(levelGoalTranslations).map(
+  ([key, value]) => [key, value],
+);
 
 export default function WorkoutForm({
   closeModal,
@@ -135,14 +134,20 @@ export default function WorkoutForm({
         />
       </LabelWrapper>
 
-      <LabelWrapper elementId="type" name="Tipo do treino">
-        <Select
-          {...register("type")}
-          elementId="type"
-          error={errors.type?.message}
-          disabled={isPending}
-          label="Tipo do treino"
-          optionsList={workoutsTypes}
+      <LabelWrapper name="Tipo do treino" elementId="type">
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <Select
+              name="type"
+              optionsList={workoutTypesOptions}
+              elementId="type"
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.type?.message}
+            />
+          )}
         />
       </LabelWrapper>
 

@@ -2,6 +2,8 @@ import { WorkoutData } from "@/src/interfaces/Workout";
 import Chip from "../Chip";
 import Link from "next/link";
 import { getWorkoutsAction } from "@/src/app/actions/workouts-actions";
+import { workoutGoalTranslations } from "@/src/constants/workouts";
+import { levelGoalTranslations } from "@/src/constants/levels";
 
 export default async function Workouts() {
   const response = await getWorkoutsAction()
@@ -23,8 +25,8 @@ export default async function Workouts() {
           <h3 className="font-medium text-md">{workout.name}</h3>
 
           <div className="flex gap-5 text-sm mt-5 justify-between items-center">
-            <Chip style="solid" text={workout.type} />
-            <Chip style="bordered" text={workout.level} />
+            <Chip style="solid" text={workoutGoalTranslations[workout.type]} />
+            <Chip style="bordered" text={levelGoalTranslations[workout.level]} />
 
             <span>0 exs - 0 sets</span>
           </div>

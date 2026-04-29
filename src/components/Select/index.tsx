@@ -1,24 +1,33 @@
-'use client'
-import { forwardRef, useState } from "react";
+"use client";
+import { ChangeEvent, forwardRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import InputError from "../InputError";
 
 interface SelectProps {
   optionsList: string[][];
-
+  onChange: (value: string) => void;
+  value: string;
+  name: string;
   disabled?: boolean;
   label?: string;
   radius?: string;
   otherStyles?: string;
   error?: string;
-  elementId?: string
+  elementId?: string;
 }
 
 export default forwardRef<HTMLSelectElement, SelectProps>(function Select(
-  { optionsList, disabled, error, otherStyles, radius, elementId },
+  { optionsList, disabled, error, otherStyles, radius, elementId, value, name, onChange },
   ref,
 ) {
   const [selectIsOpen, setSelectIsOpen] = useState(false);
+
+  const handleOnChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newValue = e.target.value;
+    if (onChange) {
+      onChange(newValue);
+    }
+  };
 
   return (
     <>
@@ -26,10 +35,12 @@ export default forwardRef<HTMLSelectElement, SelectProps>(function Select(
         <select
           ref={ref}
           id={elementId}
-          name="muscleGroup"
+          name={name}
           onFocus={() => setSelectIsOpen(true)}
           onBlur={() => setSelectIsOpen(false)}
+          onChange={handleOnChange}
           style={{ borderRadius: radius ? `${radius}px` : "12px" }}
+          value={value}
           className={`
             bg-background-dark border-transparent cursor-pointer px-4 py-2.5
             border font-light focus:outline-none rounded-[18px] w-full
@@ -43,6 +54,11 @@ export default forwardRef<HTMLSelectElement, SelectProps>(function Select(
       }
             `}
         >
+
+          <option disabled>
+            Selecione...
+          </option>
+          
           {optionsList.map((option, index) => (
             <option key={index} value={option[0]} className="cursor-pointer">
               {option[1]}

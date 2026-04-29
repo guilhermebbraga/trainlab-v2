@@ -18,6 +18,7 @@ import {
   updateExerciseAction,
 } from "@/src/app/actions/exercise-actions";
 import { useParams } from "next/navigation";
+import { muscleGoalTranslations } from "@/src/constants/muscles";
 
 interface ExerciseFormProps {
   closeModal: () => void;
@@ -51,13 +52,12 @@ export default function ExerciseForm({
     if (isEditing) {
       const getEditingExercise = async () => {
         try {
+          const response = await getExerciseByIdAction(workoutId, editing);
 
-          const response = await getExerciseByIdAction(workoutId, editing)
+          if (!response.success) throw new Error();
 
-          if(!response.success) throw new Error()
-          
-          const exercise = response.data
-            
+          const exercise = response.data;
+
           reset(exercise);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -94,16 +94,9 @@ export default function ExerciseForm({
     });
   };
 
-  const muscleGroups = [
-    ["CHEST", "Peito"],
-    ["BACK", "Costas"],
-    ["LEGS", "Pernas"],
-    ["SHOULDERS", "Ombros"],
-    ["BICEPS", "Bíceps"],
-    ["TRICEPS", "Tríceps"],
-    ["ABS", "Abdômen"],
-    ["GLUTES", "Glúteos"],
-  ];
+  const muscleGroups = Object.entries(muscleGoalTranslations).map(
+    ([key, value]) => [key, value],
+  );
 
   return (
     <form
@@ -122,11 +115,19 @@ export default function ExerciseForm({
       </LabelWrapper>
 
       <LabelWrapper name="Grupo Muscular" elementId="muscleGroup">
-        <Select
-          {...register("muscleGroup")}
-          optionsList={muscleGroups}
-          elementId="muscleGroup"
-          error={errors.muscleGroup?.message}
+        <Controller
+          name="muscleGroup"
+          control={control}
+          render={({ field }) => (
+            <Select
+              name="muscleGroup"
+              optionsList={muscleGroups}
+              elementId="muscleGroup"
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.muscleGroup?.message}
+            />
+          )}
         />
       </LabelWrapper>
 

@@ -1,25 +1,10 @@
+import { levelGoalTranslations } from "@/src/constants/levels";
+import { workoutGoalTranslations } from "@/src/constants/workouts";
 import z from "zod";
 
-const levels = ["BEGINNER", "INTERMEDIATE", "ADVANCED"] as const;
+const levels = Object.keys(levelGoalTranslations)
 
-export const trainingTypes = [
-  // Musculação e Força
-  "HYPERTROPHY",
-  "STRENGTH",
-  "POWERLIFTING",
-  "ENDURANCE",
-  // Condicionamento e Queima
-  "HIIT",
-  "CROSSFIT",
-  "WOD",
-  "CIRCUIT",
-  "CARDIO_LISS",
-  // Mobilidade e Mente
-  "YOGA",
-  "PILATES",
-  "MOBILITY",
-  "STRETCHING",
-];
+export const trainingTypes = Object.keys(workoutGoalTranslations)
 
 export const WorkoutSchema = z.object({
   name: z

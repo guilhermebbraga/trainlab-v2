@@ -7,6 +7,7 @@ import Button from "../Button";
 import { deleteExerciseAction } from "@/src/app/actions/exercise-actions";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
+import { muscleGoalTranslations } from "@/src/constants/muscles";
 
 interface ExerciseLiProps extends HTMLAttributes<HTMLLIElement> {
   exercise: Exercise;
@@ -52,7 +53,7 @@ export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProp
     >
       <div className="flex justify-between mb-5 text-sm">
         <h4>{exercise.name}</h4>
-        <Chip style="solid" text={exercise.muscleGroup.toLowerCase()} />
+        <Chip style="solid" text={muscleGoalTranslations[exercise.muscleGroup]} />
       </div>
 
       <div className="text-sm flex gap-5 text-text-muted">
