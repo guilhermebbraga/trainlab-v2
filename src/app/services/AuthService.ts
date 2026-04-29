@@ -19,9 +19,12 @@ export default class AuthService extends Service {
 
     if (!response) throw new Error("Falha");
 
+    console.log(response.data)
+    
     const { accessToken } = response.data
 
     if (accessToken) {
+      console.log(accessToken)
       Cookies.set("TrainLabAuth", accessToken)
     }
 

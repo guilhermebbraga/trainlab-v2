@@ -13,7 +13,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import LabelWrapper from "../../LabelWrapper";
-import { createWorkoutAction, editWorkoutAction } from "@/src/app/actions/workouts-actions";
+import {
+  createWorkoutAction,
+  editWorkoutAction,
+  getWorkoutWithExercisesAction,
+} from "@/src/app/actions/workouts-actions";
 
 interface WorkoutModalProps {
   closeModal: () => void;
@@ -60,15 +64,14 @@ export default function WorkoutForm({
     if (isEditing) {
       const getEditingWorkout = async () => {
         try {
-          const response = await fetch(
-            `http://192.168.15.54:9090/workouts/${editing}`,
-          );
+          const response = await getWorkoutWithExercisesAction(editing);
 
-          if (!response) throw new Error();
+          if (!response.success) throw new Error();
 
-          const workout = (await response.json()) as WorkoutInput;
+          const workout = response.data as WorkoutInput;
+
           reset(workout);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           toast.error("Falha ao carregar dados do treino");
           closeModal();
@@ -82,8 +85,7 @@ export default function WorkoutForm({
     startTransition(async () => {
       try {
         if (isEditing) {
-
-          await editWorkoutAction(data, editing)
+          await editWorkoutAction(data, editing);
 
           reset();
           toast.success("Editado com sucesso!");

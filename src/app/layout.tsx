@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PoppinsFont } from "./fonts";
 import "./globals.css";
 import { Toaster } from "sonner";
+import NavMenu from "../components/Layout/NavMenu";
 
 export const metadata: Metadata = {
   title: "TrainLab",
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang="en" className={`${PoppinsFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {children}
-        <Toaster position="top-right" richColors/>
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

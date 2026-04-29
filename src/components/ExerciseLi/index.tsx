@@ -6,7 +6,7 @@ import Chip from "../Chip";
 import Button from "../Button";
 import { deleteExerciseAction } from "@/src/app/actions/exercise-actions";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface ExerciseLiProps extends HTMLAttributes<HTMLLIElement> {
   exercise: Exercise;
@@ -17,6 +17,8 @@ interface ExerciseLiProps extends HTMLAttributes<HTMLLIElement> {
 
 export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProps) {
   const router = useRouter();
+  const params = useParams()
+  const workoutId = params.id as string
   const [open, setOpen] = useState(false);
 
   const onLongPress = () => {
@@ -26,7 +28,7 @@ export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProp
   const longPressEvents = useLongPress(onLongPress, 500);
 
   const handleDeleteExercise = async (id: string) => {
-    const response = await deleteExerciseAction(id);
+    const response = await deleteExerciseAction(workoutId, id);
     if (response.success) {
       toast.success('Deletado com sucesso!');
       router.refresh();

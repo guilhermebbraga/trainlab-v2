@@ -13,7 +13,7 @@ export default function Section({
 }: SessionProps) {
   return (
     <section className={`  ${otherStyles}`}>
-      <h2 className="text-2xl font-medium mt-12">{title}</h2>
+      <h2 className="text-2xl font-medium">{title}</h2>
       {children}
     </section>
   );

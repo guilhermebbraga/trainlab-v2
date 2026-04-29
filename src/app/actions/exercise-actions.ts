@@ -1,15 +1,39 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import ExerciseService, { PostExercise } from "../services/ExerciseService";
+import ExerciseService from "../services/ExerciseService";
 import { ExerciseInput } from "@/src/lib/validations/exercise.validations";
 
-export async function createExerciseAction(data: PostExercise) {
+export async function getExerciseByIdAction(
+  workoutId: string,
+  exerciseId: string,
+) {
   const exerciseService = new ExerciseService();
 
   try {
-    await exerciseService.postExercise(data);
-    revalidatePath(`/treinos/${data.workoutId}`);
+    const exercise = await exerciseService.getExerciseById(
+      workoutId,
+      exerciseId,
+    );
+
+    console.log(exercise);
+
+    return exercise;
+  } catch (error) {
+    console.error("Erro na Server Action: ", error);
+    return { success: false, error: "Falha ao obter exercício no servidor." };
+  }
+}
+
+export async function createExerciseAction(
+  workoutId: string,
+  data: ExerciseInput,
+) {
+  const exerciseService = new ExerciseService();
+
+  try {
+    await exerciseService.postExercise(workoutId, data);
+    revalidatePath(`/treinos/${workoutId}`);
 
     return { success: true };
   } catch (error) {
@@ -18,11 +42,15 @@ export async function createExerciseAction(data: PostExercise) {
   }
 }
 
-export async function updateExerciseAction(id: string, data: ExerciseInput) {
+export async function updateExerciseAction(
+  workoutId: string,
+  id: string,
+  data: ExerciseInput,
+) {
   const exerciseService = new ExerciseService();
 
   try {
-    await exerciseService.putExercise(id, data);
+    await exerciseService.putExercise(workoutId, id, data);
     revalidatePath(`/treinos/${id}`);
 
     return { success: true };
@@ -32,11 +60,11 @@ export async function updateExerciseAction(id: string, data: ExerciseInput) {
   }
 }
 
-export async function deleteExerciseAction(id: string) {
+export async function deleteExerciseAction(workoutId: string, id: string) {
   const exerciseService = new ExerciseService();
 
   try {
-    await exerciseService.deleteExercise(id);
+    await exerciseService.deleteExercise(workoutId, id);
 
     return { success: true };
   } catch (error) {

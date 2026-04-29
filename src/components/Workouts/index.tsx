@@ -4,8 +4,14 @@ import Link from "next/link";
 import { getWorkoutsAction } from "@/src/app/actions/workouts-actions";
 
 export default async function Workouts() {
-  const workouts: WorkoutData[] = await getWorkoutsAction()
+  const response = await getWorkoutsAction()
 
+  if(!response.success) {
+    return <p>Houve um erro</p>
+  }
+
+  const workouts = response.data as WorkoutData[]
+  
   return (
     <div className="mt-7.5 flex flex-col gap-5">
       {workouts.map((workout, index) => (

@@ -24,18 +24,20 @@ export default function TreinosClient({ children }: TreinosClientProps) {
         </Modal>
       )}
 
-      <NavHeader />
+      {/* <NavHeader /> */}
 
-      <Section title="Meus Treinos">{children}</Section>
+      <Section title="Meus Treinos">
+        {children}
 
-      <BottomWrapper>
-        <Button icon={FaFilter} text="Filtrar" />
-        <Button
-          icon={FaPlus}
-          text="Novo Treino"
-          onClick={() => setModalOpen(true)}
-        />
-      </BottomWrapper>
+        <div className="w-full mt-5 flex justify-center">
+          <Button
+            icon={FaPlus}
+            text="Novo treino"
+            style="simple"
+            onClick={() => setModalOpen(true)}
+          />
+        </div>
+      </Section>
     </AppContainer>
   );
 }
