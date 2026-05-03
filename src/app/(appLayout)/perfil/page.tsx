@@ -5,6 +5,7 @@ import { getStatsAction } from "../../actions/stats-action";
 import { StatsData } from "@/src/interfaces/Stats";
 import { StatsGoal, statsGoalTranslate } from "@/src/constants/stats";
 import { IoIosStats } from "react-icons/io";
+import Workouts from "@/src/components/Workouts";
 
 export default async function Perfil() {
   const userResponse = await getUserAction();
@@ -24,7 +25,7 @@ export default async function Perfil() {
   const stats = statsResponse.data as StatsData;
 
   return (
-    <main>
+    <main className="pb-20 flex flex-col gap-5">
       <section className="w-full h-50 bg-background-dark overflow-hidden relative flex items-end p-5">
         <div className="flex flex-col">
           <h3 className="text-4xl">{name}</h3>
@@ -34,7 +35,7 @@ export default async function Perfil() {
         <div className="absolute right-0 h-full w-[76%] bg-primary/25 rounded-full blur-[100px]"/>
       </section>
 
-      <section className="px-2 py-5">
+      <section className="px-5">
         <div className="bg-background-dark/30 border-border-custom/40 border p-5 rounded-2xl">
           <div className="flex items-center gap-2 text-2xl">
             <IoIosStats />
@@ -56,6 +57,14 @@ export default async function Perfil() {
             )}
           </ul>
         </div>
+      </section>
+
+      <section className="px-5">
+
+        <h2 className="text-2xl mt-5">Treinos Favoritos</h2>
+
+        <Workouts/>
+        
       </section>
     </main>
   );

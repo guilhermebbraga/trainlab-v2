@@ -1,11 +1,11 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { Login } from "../services/AuthService";
 import { ActionResponse } from "@/src/types/actions";
 import { ApiError, apiRequest } from "@/src/api/client";
 import { cookies } from "next/headers";
+import { LoginInput } from "@/src/lib/validations/login.validation";
 
-export async function loginAction(data: Login): Promise<ActionResponse> {
+export async function loginAction(data: LoginInput): Promise<ActionResponse> {
   try {
     const response = await apiRequest<{ accessToken: string }>("/auth/login", {
       method: "POST",
@@ -23,9 +23,9 @@ export async function loginAction(data: Login): Promise<ActionResponse> {
     if (accessToken) {
       cookieStore.set("TrainLabAuth", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 24,
-        path: "/"
+        path: "/",
       });
     }
 

@@ -11,11 +11,9 @@ import {
   RegisterSchema,
 } from "@/src/lib/validations/login.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import UserService from "../../services/UserService";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-const userService = new UserService();
+import { registerUserAction } from "../../actions/user-actions";
 
 export default function Register() {
   const [isPending, startTransition] = useTransition();
@@ -30,10 +28,15 @@ export default function Register() {
   const onSubmit = (data: RegisterInput) => {
     startTransition(async () => {
       try {
-        await userService.signup(data);
+        const response = await registerUserAction(data);
+
+        if (!response.success) {
+          toast.error(response.error || "Houve um erro inesperado");
+          return;
+        }
 
         toast.success("Conta criada com sucesso!");
-        router.push("/");
+        router.push("/login");
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
