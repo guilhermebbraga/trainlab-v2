@@ -1,11 +1,16 @@
 import Service from "./Service";
 
+export interface Login {
+  email: string;
+  password: string;
+}
+
 export default class AuthService extends Service {
   constructor() {
     super();
   }
 
-  async login({ email, password }: { email: string; password: string }) {
+  async login({ email, password }: Login) {
     const response = await this.axiosInstance.post("/auth/login", {
       email,
       password,
