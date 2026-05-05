@@ -26,7 +26,6 @@ export default function Exercises({ exercises }: ExercisesProps) {
     {exerciseModalOpen && (
         <Modal modalTitle="Editar Exercício" setIsOpen={setExerciseModalOpen}>
           <ExerciseForm
-            workoutId=""
             closeModal={() => setExerciseModalOpen(false)}
             editing={editing}
           />
