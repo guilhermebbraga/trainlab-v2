@@ -4,18 +4,16 @@ import Input from "@/src/components/Input";
 
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
-import React, { useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
   RegisterInput,
   RegisterSchema,
 } from "@/src/lib/validations/login.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import UserService from "../services/UserService";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-const userService = new UserService();
+import { registerUserAction } from "../../actions/user-actions";
 
 export default function Register() {
   const [isPending, startTransition] = useTransition();
@@ -30,10 +28,15 @@ export default function Register() {
   const onSubmit = (data: RegisterInput) => {
     startTransition(async () => {
       try {
-        await userService.signup(data);
+        const response = await registerUserAction(data);
+
+        if (!response.success) {
+          toast.error(response.error || "Houve um erro inesperado");
+          return;
+        }
 
         toast.success("Conta criada com sucesso!");
-        router.push("/");
+        router.push("/login");
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
@@ -51,7 +54,7 @@ export default function Register() {
   return (
     <div className="flex flex-col gap-7.5 h-screen px-5 pt-5 pb-16">
       <Link
-        href="/"
+        href="/login"
         className="border-2 px-2.5 rounded-custom text-primary flex items-center
         gap-2.5 hover:text-text-main cursor-pointer w-fit self-end mb-5 hover:border-primary hover:bg-primary"
       >
@@ -106,7 +109,7 @@ export default function Register() {
         <Button
           type="submit"
           text={isPending ? "Criando..." : "Criar conta"}
-          direction="left"
+          reverse
           disabled={isPending}
         />
       </form>

@@ -1,11 +1,11 @@
+import { LevelGoal } from "../types/LevelGoal.js";
+import { WorkoutGoal } from "../types/WorkoutGoal.js";
 import type { Exercise } from "./Exercise.js";
 
 export interface WorkoutData {
   name: string;
-  type: "STRENGTH" | "HYPERTROPHY" | "CARDIO" | "FUNCTIONAL" | "ENDURANCE";
-  level: "BEGGINER" | "INTERMEDIATE" | "ADVANCED";
-  totalExercises?: number;
-  totalSets?: number;
+  type: WorkoutGoal;
+  level: LevelGoal;
   id?: string;
   description?: string;
   createdAt?: string;
@@ -13,5 +13,5 @@ export interface WorkoutData {
 }
 
 export interface Statistic {
-  [key: string]: number
+  [key: string]: number;
 }

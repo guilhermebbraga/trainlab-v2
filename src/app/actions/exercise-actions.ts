@@ -1,46 +1,115 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import ExerciseService, { PostExercise } from "../services/ExerciseService";
 import { ExerciseInput } from "@/src/lib/validations/exercise.validations";
+import { ApiError, apiRequest } from "@/src/api/client";
+import { ActionResponse } from "@/src/types/actions";
 
-export async function createExerciseAction(data: PostExercise) {
-  const exerciseService = new ExerciseService();
-
+export async function createExerciseAction(
+  workoutId: string,
+  data: ExerciseInput,
+): Promise<ActionResponse> {
   try {
-    await exerciseService.postExercise(data);
-    revalidatePath(`/treinos/${data.workoutId}`);
+    await apiRequest(`/workouts/${workoutId}/exercises`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+
+    revalidatePath(`/treinos/${workoutId}`);
 
     return { success: true };
   } catch (error) {
     console.error("Erro na Server Action: ", error);
-    return { success: false, error: "Falha ao criar o exercício no servidor." };
+
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        error: error.message || "Houve uma falha ao criar o exercício",
+        code: error.status,
+      };
+    }
+
+    return { success: false, error: "Erro genérico" };
   }
 }
 
-export async function updateExerciseAction(id: string, data: ExerciseInput) {
-  const exerciseService = new ExerciseService();
-
+export async function getExerciseByIdAction(
+  workoutId: string,
+  exerciseId: string,
+): Promise<ActionResponse<ExerciseInput>> {
   try {
-    await exerciseService.putExercise(id, data);
+    const exercise = await apiRequest<ExerciseInput>(
+      `/workouts/${workoutId}/exercises/${exerciseId}`,
+      {
+        method: "GET",
+      },
+    );
+
+    return { success: true, data: exercise };
+  } catch (error) {
+    console.error("Erro na Server Action: ", error);
+
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        error: error.message || "Houve uma falha ao recuperar o exercício",
+        code: error.status,
+      };
+    }
+
+    return { success: false, error: "Erro genérico" };
+  }
+}
+
+export async function updateExerciseAction(
+  workoutId: string,
+  id: string,
+  data: ExerciseInput,
+) {
+  try {
+    await apiRequest(`/workouts/${workoutId}/exercises/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+
     revalidatePath(`/treinos/${id}`);
 
     return { success: true };
   } catch (error) {
     console.error("Erro na Server Action: ", error);
-    return { success: false, error: "Falha ao criar o exercício no servidor." };
+
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        error: error.message || "Houve uma falha ao atualizar o exercício",
+        code: error.status,
+      };
+    }
+
+    return { success: false, error: "Erro genérico" };
   }
 }
 
-export async function deleteExerciseAction(id: string) {
-  const exerciseService = new ExerciseService();
-
+export async function deleteExerciseAction(workoutId: string, id: string) {
   try {
-    await exerciseService.deleteExercise(id);
+    await apiRequest(`/workouts/${workoutId}/exercises/${id}`, {
+      method: "DELETE",
+    });
 
+    revalidatePath(`/treinos/${workoutId}`);
+    
     return { success: true };
   } catch (error) {
     console.error("Erro na Server Action: ", error);
-    return { success: false, error: "Falha ao criar o exercício no servidor." };
+
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        error: error.message || "Houve uma falha ao deletar o exercício",
+        code: error.status,
+      };
+    }
+
+    return { success: false, error: "Erro genérico" };
   }
 }

@@ -1,11 +1,19 @@
 import { WorkoutData } from "@/src/interfaces/Workout";
 import Chip from "../Chip";
 import Link from "next/link";
+import { getWorkoutsAction } from "@/src/app/actions/workouts-actions";
+import { workoutGoalTranslations } from "@/src/constants/workouts";
+import { levelGoalTranslations } from "@/src/constants/levels";
 
 export default async function Workouts() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/workouts`);
-  const workouts: WorkoutData[] = await response.json();
+  const response = await getWorkoutsAction()
 
+  if(!response.success) {
+    return <p>Houve um erro</p>
+  }
+
+  const workouts = response.data as WorkoutData[]
+  
   return (
     <div className="mt-7.5 flex flex-col gap-5">
       {workouts.map((workout, index) => (
@@ -17,10 +25,8 @@ export default async function Workouts() {
           <h3 className="font-medium text-md">{workout.name}</h3>
 
           <div className="flex gap-5 text-sm mt-5 justify-between items-center">
-            <Chip style="solid" text={workout.type} />
-            <Chip style="bordered" text={workout.level} />
-
-            <span>0 exs - 0 sets</span>
+            <Chip style="solid" text={workoutGoalTranslations[workout.type]} />
+            <Chip style="bordered" text={levelGoalTranslations[workout.level]} />
           </div>
         </Link>
       ))}

@@ -1,29 +1,27 @@
 import { ExerciseInput } from "@/src/lib/validations/exercise.validations";
 import Service from "./Service";
 
-export interface PostExercise {
-  name: string;
-  muscleGroup: string;
-  sets: number;
-  repetitions: number;
-  workoutId: string;
-}
-
 export default class ExerciseService extends Service {
-  async postExercise(data: PostExercise) {
-    const response = await this.axiosInstance.post("/exercises", { ...data });
+  
+  async postExercise(workoutId: string, data: ExerciseInput) {
+    const response = await this.axiosInstance.post(`/workouts/${workoutId}/exercises`, data);
 
     return response.data;
   }
 
-  async putExercise(id: string, data: ExerciseInput) {
-    const response = await this.axiosInstance.put(`/exercises/${id}`, data);
+  async getExerciseById(workoutId: string, exerciseId: string){
+    const response = await this.axiosInstance(`/workouts/${workoutId}/exercises/${exerciseId}`)
+    return response.data
+  }
+
+  async putExercise(workoutId: string, id: string, data: ExerciseInput) {
+    const response = await this.axiosInstance.put(`/workouts/${workoutId}/exercises/${id}`, data);
 
     return response.data;
   }
 
-  async deleteExercise(id: string) {
-    const response = await this.axiosInstance.delete(`/exercises/${id}`);
+  async deleteExercise(workoutId: string, id: string) {
+    const response = await this.axiosInstance.delete(`/workouts/${workoutId}/exercises/${id}`);
 
     return response.data;
   }

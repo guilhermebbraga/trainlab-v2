@@ -1,15 +1,7 @@
+import { muscleGoalTranslations } from "@/src/constants/muscles";
 import z from "zod";
 
-const muscleGroups = [
-  "CHEST",
-  "BACK",
-  "LEGS",
-  "SHOULDERS",
-  "BICEPS",
-  "TRICEPS",
-  "ABS",
-  "GLUTES",
-];
+const muscleGroups = Object.keys(muscleGoalTranslations);
 
 export const ExerciseSchema = z.object({
   name: z

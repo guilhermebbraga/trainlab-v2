@@ -12,19 +12,25 @@ import {
 } from "@/src/lib/validations/exercise.validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { createExerciseAction, updateExerciseAction } from "@/src/app/actions/exercise-actions";
+import {
+  createExerciseAction,
+  getExerciseByIdAction,
+  updateExerciseAction,
+} from "@/src/app/actions/exercise-actions";
+import { useParams } from "next/navigation";
+import { muscleGoalTranslations } from "@/src/constants/muscles";
 
 interface ExerciseFormProps {
-  workoutId: string;
   closeModal: () => void;
   editing?: string | null;
 }
 
 export default function ExerciseForm({
-  workoutId,
   closeModal,
   editing,
 }: ExerciseFormProps) {
+  const params = useParams();
+  const workoutId = params.id as string;
   const [isPending, startTransition] = useTransition();
   const isEditing = !!editing;
 
@@ -46,14 +52,12 @@ export default function ExerciseForm({
     if (isEditing) {
       const getEditingExercise = async () => {
         try {
-          console.log(editing);
-          const response = await fetch(
-            `http://192.168.15.54:9090/exercises/${editing}`,
-          );
+          const response = await getExerciseByIdAction(workoutId, editing);
 
-          if (!response) throw new Error();
+          if (!response.success) throw new Error();
 
-          const exercise = (await response.json()) as ExerciseInput;
+          const exercise = response.data;
+
           reset(exercise);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -64,41 +68,35 @@ export default function ExerciseForm({
 
       getEditingExercise();
     }
-  }, [closeModal, editing, isEditing, reset]);
+  }, [closeModal, editing, isEditing, reset, workoutId]);
 
   const onSubmit = (data: ExerciseInput) => {
     startTransition(async () => {
+      console.log(workoutId);
       try {
         if (isEditing) {
-          await updateExerciseAction(editing, data);
+          await updateExerciseAction(workoutId, editing, data);
 
           reset();
           toast.success("Editado com sucesso!");
           closeModal();
         } else {
-          await createExerciseAction({ ...data, workoutId });
+          await createExerciseAction(workoutId, data);
 
           reset();
           toast.success("Criado com sucesso!");
           closeModal();
         }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         toast.error("Falha ao criar");
       }
     });
   };
 
-  const muscleGroups = [
-    ["CHEST", "Peito"],
-    ["BACK", "Costas"],
-    ["LEGS", "Pernas"],
-    ["SHOULDERS", "Ombros"],
-    ["BICEPS", "Bíceps"],
-    ["TRICEPS", "Tríceps"],
-    ["ABS", "Abdômen"],
-    ["GLUTES", "Glúteos"],
-  ];
+  const muscleGroups = Object.entries(muscleGoalTranslations).map(
+    ([key, value]) => [key, value],
+  );
 
   return (
     <form
@@ -117,11 +115,19 @@ export default function ExerciseForm({
       </LabelWrapper>
 
       <LabelWrapper name="Grupo Muscular" elementId="muscleGroup">
-        <Select
-          {...register("muscleGroup")}
-          optionsList={muscleGroups}
-          elementId="muscleGroup"
-          error={errors.muscleGroup?.message}
+        <Controller
+          name="muscleGroup"
+          control={control}
+          render={({ field }) => (
+            <Select
+              name="muscleGroup"
+              optionsList={muscleGroups}
+              elementId="muscleGroup"
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.muscleGroup?.message}
+            />
+          )}
         />
       </LabelWrapper>
 

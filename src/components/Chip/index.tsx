@@ -11,7 +11,7 @@ export default function Chip({ text, style = "default" }: ChipProps) {
   };
 
   return (
-    <span className={`${stylesMap[style]} px-2.5 rounded-full lowercase`}>
+    <span className={`${stylesMap[style]} px-2.5 rounded-full`}>
       {text}
     </span>
   );

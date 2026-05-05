@@ -6,7 +6,8 @@ import Chip from "../Chip";
 import Button from "../Button";
 import { deleteExerciseAction } from "@/src/app/actions/exercise-actions";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { muscleGoalTranslations } from "@/src/constants/muscles";
 
 interface ExerciseLiProps extends HTMLAttributes<HTMLLIElement> {
   exercise: Exercise;
@@ -17,21 +18,23 @@ interface ExerciseLiProps extends HTMLAttributes<HTMLLIElement> {
 
 export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProps) {
   const router = useRouter();
+  const params = useParams()
+  const workoutId = params.id as string
   const [open, setOpen] = useState(false);
 
   const onLongPress = () => {
     setOpen(!open);
   };
 
-  const longPressEvents = useLongPress(onLongPress, 500);
+  const {ispressing, ...otherProps} = useLongPress(onLongPress, 500);
 
   const handleDeleteExercise = async (id: string) => {
-    const response = await deleteExerciseAction(id);
+    const response = await deleteExerciseAction(workoutId, id);
     if (response.success) {
       toast.success('Deletado com sucesso!');
       router.refresh();
     } else {
-      toast.error('Ocorreu um erro.');
+      toast.error(response.error);
     }
   };
 
@@ -41,15 +44,16 @@ export default function ExerciseLi({ exercise, onClick, editing}: ExerciseLiProp
   
   return (
     <li
-      {...longPressEvents}
+      {...otherProps}
       onClick={onClick}
       className={`
             bg-background-dark p-5 rounded-2xl  cursor-pointer
+            ${ispressing && "active:bg-background-light"} select-none
             `}
     >
       <div className="flex justify-between mb-5 text-sm">
         <h4>{exercise.name}</h4>
-        <Chip style="solid" text={exercise.muscleGroup.toLowerCase()} />
+        <Chip style="solid" text={muscleGoalTranslations[exercise.muscleGroup]} />
       </div>
 
       <div className="text-sm flex gap-5 text-text-muted">

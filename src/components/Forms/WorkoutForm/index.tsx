@@ -13,25 +13,26 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import LabelWrapper from "../../LabelWrapper";
-import { createWorkoutAction, editWorkoutAction } from "@/src/app/actions/workouts-actions";
+import {
+  createWorkoutAction,
+  editWorkoutAction,
+  getWorkoutWithExercisesAction,
+} from "@/src/app/actions/workouts-actions";
+import { workoutGoalTranslations } from "@/src/constants/workouts";
+import { levelGoalTranslations } from "@/src/constants/levels";
 
 interface WorkoutModalProps {
   closeModal: () => void;
   editing?: string;
 }
 
-const workoutsTypes = [
-  ["STRENGTH", "Força"],
-  ["HYPERTROPHY", "Hipertrofia"],
-  ["CARDIO", "Cardio"],
-  ["FUNCTIONAL", "Funcional"],
-  ["ENDURANCE", "Resistência"],
-];
-const difficulties = [
-  ["BEGINNER", "Iniciante"],
-  ["INTERMEDIATE", "Intermediário"],
-  ["ADVANCED", "Avançado"],
-];
+const workoutTypesOptions = Object.entries(workoutGoalTranslations).map(
+  ([key, value]) => [key, value],
+);
+
+const difficulties = Object.entries(levelGoalTranslations).map(
+  ([key, value]) => [key, value],
+);
 
 export default function WorkoutForm({
   closeModal,
@@ -60,15 +61,14 @@ export default function WorkoutForm({
     if (isEditing) {
       const getEditingWorkout = async () => {
         try {
-          const response = await fetch(
-            `http://192.168.15.54:9090/workouts/${editing}`,
-          );
+          const response = await getWorkoutWithExercisesAction(editing);
 
-          if (!response) throw new Error();
+          if (!response.success) throw new Error();
 
-          const workout = (await response.json()) as WorkoutInput;
+          const workout = response.data as WorkoutInput;
+
           reset(workout);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           toast.error("Falha ao carregar dados do treino");
           closeModal();
@@ -82,8 +82,7 @@ export default function WorkoutForm({
     startTransition(async () => {
       try {
         if (isEditing) {
-
-          await editWorkoutAction(data, editing)
+          await editWorkoutAction(data, editing);
 
           reset();
           toast.success("Editado com sucesso!");
@@ -133,14 +132,20 @@ export default function WorkoutForm({
         />
       </LabelWrapper>
 
-      <LabelWrapper elementId="type" name="Tipo do treino">
-        <Select
-          {...register("type")}
-          elementId="type"
-          error={errors.type?.message}
-          disabled={isPending}
-          label="Tipo do treino"
-          optionsList={workoutsTypes}
+      <LabelWrapper name="Tipo do treino" elementId="type">
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <Select
+              name="type"
+              optionsList={workoutTypesOptions}
+              elementId="type"
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.type?.message}
+            />
+          )}
         />
       </LabelWrapper>
 
